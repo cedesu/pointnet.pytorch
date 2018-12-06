@@ -1,5 +1,5 @@
 from __future__ import print_function
-from show3d_balls import *
+#from show3d_balls import *
 import argparse
 import os
 import random
@@ -45,9 +45,9 @@ point_np = point.numpy()
 
 
 
-cmap = plt.cm.get_cmap("hsv", 10)
-cmap = np.array([cmap(i) for i in range(10)])[:,:3]
-gt = cmap[seg.numpy() - 1, :]
+#cmap = plt.cm.get_cmap("hsv", 10)
+#cmap = np.array([cmap(i) for i in range(10)])[:,:3]
+#gt = cmap[seg.numpy() - 1, :]
 
 classifier = PointNetDenseCls(k = 4)
 classifier.load_state_dict(torch.load(opt.model))
