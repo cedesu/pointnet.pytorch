@@ -12,6 +12,7 @@ import sys
 import torchvision.transforms as transforms
 import argparse
 import json
+import random
 
 
 class PartDataset(data.Dataset):
@@ -26,48 +27,29 @@ class PartDataset(data.Dataset):
             self.path = self.path[int(len(self.path) * 0.9):]
 
     def __getitem__(self, index):
-        try:
-            print(index,self.path[index])
-            pathi = self.path[index]
-            f = open(os.path.join(self.root, pathi), 'r')
-            sdf = list(map(float, f.readline().split()))
-            sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
-            out_sdf = np.zeros((1, 32, 32, 32))
-            for i in range(32):
-                for j in range(32):
-                    for k in range(32):
-                        out_sdf[0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
-            in_voxel = np.sign(out_sdf)
+        print(index, self.path[index])
+        pathi = self.path[index]
+        f = open(os.path.join(self.root, pathi), 'r')
+        sdf = list(map(float, f.readline().split()))
+        sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
+        out_sdf = np.zeros((1, 32, 32, 32))
+        for i in range(32):
+            for j in range(32):
+                for k in range(32):
+                    out_sdf[0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
+        if (random.random()<0.5):
+            out_sdf=np.flip(out_sdf,0)
+        if (random.random()<0.5):
+            out_sdf=np.flip(out_sdf,1)
+        in_voxel = np.sign(out_sdf)
 
-            in_voxel = torch.from_numpy(in_voxel)
-            out_sdf = torch.from_numpy(out_sdf)
+        in_voxel = torch.from_numpy(in_voxel)
+        out_sdf = torch.from_numpy(out_sdf)
 
-            in_voxel = in_voxel.float()
-            out_sdf = out_sdf.float()
+        in_voxel = in_voxel.float()
+        out_sdf = out_sdf.float()
 
-            return in_voxel, out_sdf
-        except:
-            index=index+1
-            print(' ',index,self.path[index])
-            pathi = self.path[index]
-            f = open(os.path.join(self.root, pathi), 'r')
-            sdf = list(map(float, f.readline().split()))
-            sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
-            out_sdf = np.zeros((1, 1, 32, 32, 32))
-            for i in range(32):
-                for j in range(32):
-                    for k in range(32):
-                        out_sdf[0, 0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
-            in_voxel = np.sign(out_sdf)
-
-            in_voxel = torch.from_numpy(in_voxel)
-            out_sdf = torch.from_numpy(out_sdf)
-
-            in_voxel = in_voxel.float()
-            out_sdf = out_sdf.float()
-            print('safe')
-
-            return in_voxel, out_sdf
+        return in_voxel, out_sdf
 
     def __len__(self):
         return len(self.path)
