@@ -35,11 +35,11 @@ print("Random Seed: ", opt.manualSeed)
 random.seed(opt.manualSeed)
 torch.manual_seed(opt.manualSeed)
 
-dataset = PartDataset(root = 'shapenetcore_partanno_segmentation_benchmark_v0', classification = False, class_choice = ['Chair'])
+dataset = PartDataset(root = '..//sdf_newnew', classification = False, class_choice = ['Chair'])
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=opt.batchSize,
                                           shuffle=True, num_workers=int(opt.workers))
 
-test_dataset = PartDataset(root = 'shapenetcore_partanno_segmentation_benchmark_v0', classification = False, class_choice = ['Chair'], train = False)
+test_dataset = PartDataset(root = '..//sdf_newnew', classification = False, class_choice = ['Chair'], train = False)
 testdataloader = torch.utils.data.DataLoader(test_dataset, batch_size=opt.batchSize,
                                           shuffle=True, num_workers=int(opt.workers))
 
