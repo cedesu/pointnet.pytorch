@@ -32,14 +32,19 @@ class PartDataset(data.Dataset):
         sdf = list(map(float, f.readline().split()))
         sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
         out_sdf = np.zeros((1, 32, 32, 32))
+        aug1=random.random()
+        aug2=random.random()
+        aug3=random.random()
         for i in range(32):
+            if aug1<0.5:
+                i1=32-i
             for j in range(32):
+                if aug2<0.5:
+                    j1=32-j
                 for k in range(32):
-                    out_sdf[0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
-        if (random.random()<0.5):
-            out_sdf=np.flip(out_sdf,0)
-        if (random.random()<0.5):
-            out_sdf=np.flip(out_sdf,1)
+                    if aug3<0.5:
+                        k1=32-k
+                    out_sdf[0, i, j, k] = sdf[i1 * 3 + 3, j1 * 3 + 3, k1 * 3 + 3]
         in_voxel = np.sign(out_sdf)
 
         in_voxel = torch.from_numpy(in_voxel)
