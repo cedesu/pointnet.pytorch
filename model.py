@@ -144,12 +144,10 @@ class Modified3DUNet(nn.Module):
 
 		# Level 5
 		out = self.conv3d_c5(out)
-		print(out.size())
 		residual_5 = out
 		out = self.norm_lrelu_conv_c5(out)
 		out = self.dropout3d(out)
 		out = self.norm_lrelu_conv_c5(out)
-		print(out.size())
 		out += residual_5
 		out = self.norm_lrelu_upscale_conv_norm_lrelu_l0(out)
 
