@@ -141,7 +141,6 @@ class Modified3DUNet(nn.Module):
 		out = self.inorm3d_c4(out)
 		out = self.lrelu(out)
 		context_4 = out
-		print(out.size())
 
 		# Level 5
 		out = self.conv3d_c5(out)
@@ -153,12 +152,10 @@ class Modified3DUNet(nn.Module):
 		print(out.size())
 		out += residual_5
 		out = self.norm_lrelu_upscale_conv_norm_lrelu_l0(out)
-		print(out.size())
 
 		out = self.conv3d_l0(out)
 		out = self.inorm3d_l0(out)
 		out = self.lrelu(out)
-		print(out.size())
 
 		# Level 1 localization pathway
 		out = torch.cat([out, context_4], dim=1)
