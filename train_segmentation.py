@@ -14,7 +14,7 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
 from datasets import PartDataset
-from pointnet import PointNetDenseCls
+from model import Modified3DUNet
 import torch.nn.functional as F
 
 
@@ -54,7 +54,7 @@ except OSError:
 blue = lambda x:'\033[94m' + x + '\033[0m'
 
 
-classifier = PointNetDenseCls(k = num_classes)
+classifier = Modified3DUNet(in_channels=1,n_classes=1)
 
 if opt.model != '':
     classifier.load_state_dict(torch.load(opt.model))
