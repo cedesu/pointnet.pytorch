@@ -48,7 +48,8 @@ class PartDataset(data.Dataset):
                     if aug3<0.5:
                         k1=32-k
                     out_sdf[0, i, j, k] = sdf[i1 * 3 + 3, j1 * 3 + 3, k1 * 3 + 3]
-        out_sdf=np.clip(out_sdf,-20,20)
+        #truncate
+        #out_sdf=np.clip(out_sdf,-20,20)
         in_voxel = np.sign(out_sdf)
 
         in_voxel = torch.from_numpy(in_voxel)
