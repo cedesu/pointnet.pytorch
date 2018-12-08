@@ -201,7 +201,7 @@ class Modified3DUNet(nn.Module):
 
 if __name__ == '__main__':
     print('test')
-    d = PartDataset(root='sdf', train=True)
+    d = PartDataset(root='../sdf_newnew', train=True)
     inn,_=d[0]
     model=Modified3DUNet(in_channels=1,n_classes=1)
     out=model(inn)
