@@ -70,7 +70,7 @@ for epoch in range(opt.nepoch):
         pred = classifier(points)
         pred = pred.view(-1)
         target = target.view(-1)
-        # print(pred.size(), target.size())
+        print(pred[14], target[14],pred,target)
         loss = loss_fn(pred, target)
         print(loss.type(),loss.size(),loss)
         loss.backward()
