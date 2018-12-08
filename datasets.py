@@ -15,89 +15,44 @@ import json
 
 
 class PartDataset(data.Dataset):
-    def __init__(self, root, npoints = 2500, classification = False, class_choice = None, train = True):
-        self.npoints = npoints
+    def __init__(self, root, train = True):
         self.root = root
-        self.catfile = os.path.join(self.root, 'synsetoffset2category.txt')
-        self.cat = {}
+        self.path=os.listdir(root)
+        self.maxn=100
 
-        self.classification = classification
-
-        with open(self.catfile, 'r') as f:
-            for line in f:
-                ls = line.strip().split()
-                self.cat[ls[0]] = ls[1]
-        #print(self.cat)
-        if not class_choice is  None:
-            self.cat = {k:v for k,v in self.cat.items() if k in class_choice}
-
-        self.meta = {}
-        for item in self.cat:
-            #print('category', item)
-            self.meta[item] = []
-            dir_point = os.path.join(self.root, self.cat[item], 'points')
-            dir_seg = os.path.join(self.root, self.cat[item], 'points_label')
-            #print(dir_point, dir_seg)
-            fns = sorted(os.listdir(dir_point))
-            if train:
-                fns = fns[:int(len(fns) * 0.9)]
-            else:
-                fns = fns[int(len(fns) * 0.9):]
-
-            #print(os.path.basename(fns))
-            for fn in fns:
-                token = (os.path.splitext(os.path.basename(fn))[0])
-                self.meta[item].append((os.path.join(dir_point, token + '.pts'), os.path.join(dir_seg, token + '.seg')))
-
-        self.datapath = []
-        for item in self.cat:
-            for fn in self.meta[item]:
-                self.datapath.append((item, fn[0], fn[1]))
-
-
-        self.classes = dict(zip(sorted(self.cat), range(len(self.cat))))
-        print(self.classes)
-        self.num_seg_classes = 0
-        if not self.classification:
-            for i in range(len(self.datapath)//50):
-                l = len(np.unique(np.loadtxt(self.datapath[i][-1]).astype(np.uint8)))
-                if l > self.num_seg_classes:
-                    self.num_seg_classes = l
-        #print(self.num_seg_classes)
-
+        if train:
+            self.path = self.path[:int(len(self.path) * 0.9)]
+        else:
+            self.path = self.path[int(len(self.path) * 0.9):]
 
     def __getitem__(self, index):
-        fn = self.datapath[index]
-        cls = self.classes[self.datapath[index][0]]
-        point_set = np.loadtxt(fn[1]).astype(np.float32)
-        seg = np.loadtxt(fn[2]).astype(np.int64)
-        #print(point_set.shape, seg.shape)
+        pathi = self.path[index]
+        f=open(os.path.join(self.root,pathi),'r')
+        sdf=list(map(float,f.readline().split()))
+        sdf=np.array(sdf).reshape(self.maxn,self.maxn,self.maxn)
+        out_sdf=np.zeros((1,1,32,32,32))
+        for i in range(32):
+            for j in range(32):
+                for k in range(32):
+                    out_sdf[0,0,i,j,k]=sdf[i*3+3,j*3+3,k*3+3]
+        in_voxel=np.sign(out_sdf)
 
-        choice = np.random.choice(len(seg), self.npoints, replace=True)
-        #resample
-        point_set = point_set[choice, :]
-        seg = seg[choice]
-        point_set = torch.from_numpy(point_set)
-        seg = torch.from_numpy(seg)
-        cls = torch.from_numpy(np.array([cls]).astype(np.int64))
-        print(point_set.shape,seg.shape)
-        if self.classification:
-            return point_set, cls
-        else:
-            return point_set, seg
+        in_voxel=torch.from_numpy(in_voxel)
+        out_sdf=torch.from_numpy(out_sdf)
+
+        in_voxel=in_voxel.float()
+        out_sdf=out_sdf.float()
+
+        return in_voxel,out_sdf;
 
     def __len__(self):
-        return len(self.datapath)
+        return len(self.path)
 
 
 if __name__ == '__main__':
     print('test')
-    d = PartDataset(root = 'shapenetcore_partanno_segmentation_benchmark_v0', class_choice = ['Chair'])
+    d = PartDataset(root = 'sdf',train=True)
     print(len(d))
-    ps, seg = d[0]
-    print(ps.size(), ps.type(), seg.size(),seg.type())
+    inn,out = d[0]
+    print(inn.size(), inn.type(), out.size(),out.type())
 
-    d = PartDataset(root = 'shapenetcore_partanno_segmentation_benchmark_v0', classification = True)
-    print(len(d))
-    ps, cls = d[0]
-    print(ps.size(), ps.type(), cls.size(),cls.type())
