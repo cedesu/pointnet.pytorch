@@ -72,7 +72,7 @@ for epoch in range(opt.nepoch):
         target = target.view(-1)
         # print(pred.size(), target.size())
         loss = loss_fn(pred, target)
-        printf(loss.type(),loss.size(),loss)
+        print(loss.type(),loss.size(),loss)
         loss.backward()
         optimizer.step()
         print('[%d: %d/%d] train loss: %f loss: %f' % (epoch, i, num_batch, loss.item(), loss))
