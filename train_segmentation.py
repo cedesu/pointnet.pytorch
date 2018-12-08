@@ -56,7 +56,7 @@ if opt.model != '':
 optimizer = optim.SGD(classifier.parameters(), lr=0.01, momentum=0.9)
 classifier.cuda()
 
-loss_fn = torch.nn.MSELoss(reduce=True, size_average=False)
+loss_fn = torch.nn.MSELoss(reduce=True, size_average=True)
 
 num_batch = len(dataset) / opt.batchSize
 
