@@ -32,11 +32,11 @@ class PartDataset(data.Dataset):
             f = open(os.path.join(self.root, pathi), 'r')
             sdf = list(map(float, f.readline().split()))
             sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
-            out_sdf = np.zeros((1, 1, 32, 32, 32))
+            out_sdf = np.zeros((1, 32, 32, 32))
             for i in range(32):
                 for j in range(32):
                     for k in range(32):
-                        out_sdf[0, 0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
+                        out_sdf[0, i, j, k] = sdf[i * 3 + 3, j * 3 + 3, k * 3 + 3]
             in_voxel = np.sign(out_sdf)
 
             in_voxel = torch.from_numpy(in_voxel)
