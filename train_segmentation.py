@@ -21,7 +21,7 @@ import torch.nn.functional as F
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
-parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
+parser.add_argument('--workers', type=int, help='number of data loading workers', default=1)
 parser.add_argument('--nepoch', type=int, default=25, help='number of epochs to train for')
 parser.add_argument('--outf', type=str, default='seg',  help='output folder')
 parser.add_argument('--model', type=str, default = '',  help='model path')
@@ -62,6 +62,8 @@ if opt.model != '':
 optimizer = optim.SGD(classifier.parameters(), lr=0.01, momentum=0.9)
 classifier.cuda()
 
+loss_fn = torch.nn.MSELoss(reduce=False, size_average=False)
+
 num_batch = len(dataset)/opt.batchSize
 
 for epoch in range(opt.nepoch):
@@ -72,18 +74,16 @@ for epoch in range(opt.nepoch):
         points, target = points.cuda(), target.cuda()   
         optimizer.zero_grad()
         classifier = classifier.train()
-        pred, _ = classifier(points)
-        pred = pred.view(-1, num_classes)
-        target = target.view(-1,1)[:,0] - 1
+        pred = classifier(points)
+        pred = pred.view(-1)
+        target = target.view(-1)
         #print(pred.size(), target.size())
-        loss = F.nll_loss(pred, target)
+        loss = loss_fn(pred, target)
         loss.backward()
         optimizer.step()
-        pred_choice = pred.data.max(1)[1]
-        correct = pred_choice.eq(target.data).cpu().sum()
-        print('[%d: %d/%d] train loss: %f accuracy: %f' %(epoch, i, num_batch, loss.item(), correct.item()/float(opt.batchSize * 2500)))
+        print('[%d: %d/%d] train loss: %f loss: %f' %(epoch, i, num_batch, loss.item(), loss))
         
-        if i % 10 == 0:
+        '''if i % 10 == 0:
             j, data = next(enumerate(testdataloader, 0))
             points, target = data
             points, target = Variable(points), Variable(target)
@@ -98,5 +98,5 @@ for epoch in range(opt.nepoch):
             pred_choice = pred.data.max(1)[1]
             correct = pred_choice.eq(target.data).cpu().sum()
             print('[%d: %d/%d] %s loss: %f accuracy: %f' %(epoch, i, num_batch, blue('test'), loss.item(), correct.item()/float(opt.batchSize * 2500)))
-    
+    '''
     torch.save(classifier.state_dict(), '%s/seg_model_%d.pth' % (opt.outf, epoch))
