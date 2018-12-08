@@ -73,7 +73,19 @@ for epoch in range(opt.nepoch):
         loss = loss_fn(pred, target)
         loss.backward()
         optimizer.step()
-        print('[%d: %d/%d] train loss: %f loss: %f' % (epoch, i, num_batch, loss.item(), loss))
+        print('[%d: %d/%d] train loss: %f' % (epoch, i, num_batch, loss.item()))
+        if i % 10 ==0:
+            j,data=next(enumerate(testdataloader,0))
+            points, target = data
+            points, target = Variable(points), Variable(target)
+            points, target = points.cuda(), target.cuda()
+            optimizer.zero_grad()
+            classifier = classifier.train()
+            pred = classifier(points)
+            pred = pred.view(-1)
+            target = target.view(-1)
+            loss = loss_fn(pred, target)
+            print('test loss: %f' % (loss))
 
         '''if i % 10 == 0:
             j, data = next(enumerate(testdataloader, 0))
