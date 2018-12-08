@@ -43,7 +43,7 @@ test_dataset = PartDataset(root = '..//sdf_newnew',train=False)
 testdataloader = torch.utils.data.DataLoader(test_dataset, batch_size=opt.batchSize,
                                           shuffle=True, num_workers=int(opt.workers))
 
-print(dataset[0].size())
+print(len(dataset),len(test_dataset))
 try:
     os.makedirs(opt.outf)
 except OSError:
@@ -67,8 +67,8 @@ num_batch = len(dataset)/opt.batchSize
 for epoch in range(opt.nepoch):
     for i, data in enumerate(dataloader, 0):
         points, target = data
+        print(points.size())
         points, target = Variable(points), Variable(target)
-        points = points.transpose(2,1) 
         points, target = points.cuda(), target.cuda()   
         optimizer.zero_grad()
         classifier = classifier.train()
