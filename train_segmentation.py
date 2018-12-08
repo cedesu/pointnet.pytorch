@@ -64,7 +64,6 @@ for epoch in range(opt.nepoch):
     for i, data in enumerate(dataloader, 0):
         points, target = data
         points, target = Variable(points), Variable(target)
-        points = points.transpose(2, 1)
         points, target = points.cuda(), target.cuda()
         optimizer.zero_grad()
         classifier = classifier.train()
