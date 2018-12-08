@@ -43,7 +43,7 @@ test_dataset = PartDataset(root = '..//sdf_newnew',train=False)
 testdataloader = torch.utils.data.DataLoader(test_dataset, batch_size=opt.batchSize,
                                           shuffle=True, num_workers=int(opt.workers))
 
-print(len(dataset), len(test_dataset))
+print(dataset.size())
 try:
     os.makedirs(opt.outf)
 except OSError:
