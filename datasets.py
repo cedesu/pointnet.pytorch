@@ -26,6 +26,7 @@ class PartDataset(data.Dataset):
             self.path = self.path[int(len(self.path) * 0.9):]
 
     def __getitem__(self, index):
+        print('get',index)
         pathi = self.path[index]
         f=open(os.path.join(self.root,pathi),'r')
         sdf=list(map(float,f.readline().split()))
