@@ -47,7 +47,7 @@ class PartDataset(data.Dataset):
 
             return in_voxel, out_sdf
         except:
-            print(index)
+            print(' ',index)
             index+=1
             pathi = self.path[index]
             f = open(os.path.join(self.root, pathi), 'r')
