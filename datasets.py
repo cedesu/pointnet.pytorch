@@ -36,12 +36,15 @@ class PartDataset(data.Dataset):
         aug2=random.random()
         aug3=random.random()
         for i in range(32):
+            i1=i
             if aug1<0.5:
                 i1=32-i
             for j in range(32):
+                j1=j
                 if aug2<0.5:
                     j1=32-j
                 for k in range(32):
+                    k1=k
                     if aug3<0.5:
                         k1=32-k
                     out_sdf[0, i, j, k] = sdf[i1 * 3 + 3, j1 * 3 + 3, k1 * 3 + 3]
