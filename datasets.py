@@ -27,6 +27,7 @@ class PartDataset(data.Dataset):
 
     def __getitem__(self, index):
         try:
+            print(index)
             pathi = self.path[index]
             f = open(os.path.join(self.root, pathi), 'r')
             sdf = list(map(float, f.readline().split()))
@@ -47,6 +48,7 @@ class PartDataset(data.Dataset):
             return in_voxel, out_sdf
         except:
             index=index+1
+            print(' ',index)
             pathi = self.path[index]
             f = open(os.path.join(self.root, pathi), 'r')
             sdf = list(map(float, f.readline().split()))
@@ -63,6 +65,7 @@ class PartDataset(data.Dataset):
 
             in_voxel = in_voxel.float()
             out_sdf = out_sdf.float()
+            print('safe')
 
             return in_voxel, out_sdf
 
