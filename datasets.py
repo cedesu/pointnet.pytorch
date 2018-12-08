@@ -65,6 +65,7 @@ class PartDataset(data.Dataset):
 
             in_voxel = in_voxel.float()
             out_sdf = out_sdf.float()
+            print('safe')
 
             return in_voxel, out_sdf
 
