@@ -24,7 +24,7 @@ parser.add_argument('--nepoch', type=int, default=25, help='number of epochs to 
 parser.add_argument('--nowepoch', type=int, default=0, help='current epoch')
 parser.add_argument('--outf', type=str, default='seg', help='output folder')
 parser.add_argument('--model', type=str, default='', help='model path')
-parser.add_argument('--lr', type=float, default=0.01, help='model path')
+parser.add_argument('--lr', type=float, default=0.01, help='learning rate')
 
 opt = parser.parse_args()
 print(opt)
