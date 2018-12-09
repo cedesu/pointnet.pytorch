@@ -31,23 +31,23 @@ class PartDataset(data.Dataset):
         f = open(os.path.join(self.root, pathi), 'r')
         sdf = list(map(float, f.readline().split()))
         sdf = np.array(sdf).reshape(self.maxn, self.maxn, self.maxn)
-        out_sdf = np.zeros((1, 32, 32, 32))
+        out_sdf = np.zeros((1, 64,64,64))
         aug1=random.random()
         aug2=random.random()
         aug3=random.random()
-        for i in range(32):
+        for i in range(64):
             i1=i
             if aug1<0.5:
-                i1=32-i
-            for j in range(32):
+                i1=63-i
+            for j in range(64):
                 j1=j
                 if aug2<0.5:
-                    j1=32-j
-                for k in range(32):
+                    j1=63-j
+                for k in range(64):
                     k1=k
                     if aug3<0.5:
-                        k1=32-k
-                    out_sdf[0, i, j, k] = sdf[i1 * 3 + 3, j1 * 3 + 3, k1 * 3 + 3]
+                        k1=63-k
+                    out_sdf[0, i, j, k] = sdf[18+i1,18+j1,18+k1]
         #truncate
         #out_sdf=np.clip(out_sdf,-20,20)
         in_voxel = np.sign(out_sdf)
@@ -70,4 +70,3 @@ if __name__ == '__main__':
     print(len(d))
     inn,out = d[0]
     print(inn.size(), inn.type(), out.size(),out.type())
-
