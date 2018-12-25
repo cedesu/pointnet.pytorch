@@ -19,7 +19,7 @@ class PartDataset(data.Dataset):
     def __init__(self, root, train = True):
         self.root = root
         self.path=os.listdir(root)
-        self.maxn=100
+        self.maxn=64
 
         if train:
             self.path = self.path[:int(len(self.path) * 0.9)]
@@ -47,7 +47,7 @@ class PartDataset(data.Dataset):
                     k1=k
                     if aug3<0.5:
                         k1=63-k
-                    out_sdf[0, i, j, k] = sdf[18+i1,18+j1,18+k1]
+                    out_sdf[0, i, j, k] = sdf[i1,j1,k1]
         #truncate
         #out_sdf=np.clip(out_sdf,-20,20)
         in_voxel = np.sign(out_sdf)
