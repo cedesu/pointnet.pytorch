@@ -58,7 +58,7 @@ class PartDataset(data.Dataset):
         in_voxel = in_voxel.float()
         out_sdf = out_sdf.float()
 
-        return out_sdf,in_voxel
+        return in_voxel，out_sdf
 
     def __len__(self):
         return len(self.path)
